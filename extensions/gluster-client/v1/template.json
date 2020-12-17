@@ -1,0 +1,65 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+         "apiVersionDeployments": {
+             "type": "string",
+             "minLength": 1,
+             "metadata": {
+                 "description": "Deployments API Version"
+             }
+         },
+         "apiVersionCompute": {
+             "type": "string",
+             "minLength": 1,
+             "metadata": {
+                 "description": "Compute API Version"
+             }
+         },
+         "index": {
+             "type": "int",
+             "metadata": {
+                 "description": "index based on vm count"
+             }
+         },
+         "agentpool1VMNamePrefix": {
+             "type": "string",
+             "metadata": {
+                 "description": "prefix of agentpool"
+             }
+         },
+         "agentpool1Offset": {
+             "type": "int",
+             "metadata": {
+                 "descriptiont": "agentpool offset"
+             }
+         }
+    },
+    "variables": {
+         "initScriptUrl": "https://raw.githubusercontent.com/gangyi89/ansible-azure/master/extensions/gluster-client/v1/gluster-client.sh"
+    },
+    "resources": [
+     {
+       "apiVersion": "[parameters('apiVersionCompute')]",
+       "dependsOn": [],
+       "location": "[resourceGroup().location]",
+       "type": "Microsoft.Compute/virtualMachines/extensions",
+       "name": "[concat(parameters('agentpool1VMNamePrefix'), parameters('agentpool1Offset'),'/glustercse', '-agent-', parameters('agentpool1Offset'))]",
+       "properties": {
+         "publisher": "Microsoft.OSTCExtensions",
+         "type": "CustomScriptForLinux",
+         "typeHandlerVersion": "1.5",
+         "autoUpgradeMinorVersion": true,
+         "settings": {
+             "fileUris": [
+                "[variables('initScriptUrl')]"
+              ]
+         },
+         "protectedSettings": {
+            "commandToExecute": "[concat('/bin/bash -c \"/bin/bash ./gluster-client.sh ', ' >> /var/log/azure/sysdig-provision.log 2>&1 &\" &')]"
+         }
+        }
+     }
+    ],
+    "outputs": {  }
+ }

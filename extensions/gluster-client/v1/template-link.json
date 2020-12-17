@@ -1,0 +1,36 @@
+{
+    "name": "[concat(variables('agentpool1VMNamePrefix'), copyIndex(variables('agentpool1Offset')), '-gluster-client')]",
+    "type": "Microsoft.Resources/deployments",
+    "apiVersion": "[variables('apiVersionDeployments')]",
+    "copy": {
+        "count": "[sub(variables('agentpool1Count'), variables('agentpool1Offset'))]",
+        "name": "vmLoopNode"
+      },
+    "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('agentpool1VMNamePrefix'), copyIndex(variables('agentpool1Offset')), '/extensions/cse-agent-', copyIndex(variables('agentpool1Offset')))]"
+    ],
+    "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+            "uri": "https://raw.githubusercontent.com/gangyi89/aks-engine-extension/master/extensions/gluster-client/v1/template.json",
+            "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+            "apiVersionDeployments": {
+                "value": "[variables('apiVersionDeployments')]"
+            },
+            "apiVersionCompute": {
+                "value": "[variables('apiVersionCompute')]"
+            },
+            "index": {
+                "value": "[sub(variables('agentpool1Count'), variables('agentpool1Offset'))]"
+            },
+            "agentpool1VMNamePrefix": {
+                "value": "[variables('agentpool1VMNamePrefix')]"
+            },
+            "agentpool1Offset": {
+                "value": "[copyIndex(variables('agentpool1Offset'))]"
+            }
+        }
+    }
+}
