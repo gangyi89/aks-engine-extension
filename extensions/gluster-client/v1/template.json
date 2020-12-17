@@ -36,7 +36,7 @@
          }
     },
     "variables": {
-         "initScriptUrl": "https://raw.githubusercontent.com/gangyi89/ansible-azure/master/extensions/gluster-client/v1/gluster-client.sh"
+         "initScriptUrl": "https://raw.githubusercontent.com/gangyi89/aks-engine-extension/master/extensions/gluster-client/v1/gluster-client.sh"
     },
     "resources": [
      {
